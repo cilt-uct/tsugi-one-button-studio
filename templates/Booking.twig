@@ -1,0 +1,35 @@
+{% extends "@Tsugi/Page.twig" %}
+
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="css/app.css"/>
+{% endblock %}
+
+{% block content %}
+<!-- Rendered from Booking.twig -->
+<h1>One Button Studio</h1>
+
+<div id="calendar"></div>
+
+{% endblock %}
+
+
+{% block footer %}
+<script src="js/tmpl.min.js"></script>
+<script src="js/moment.min.js"></script>
+<script src="js/calendar.js"></script>
+<script src="js/app.js"></script>
+<script type="text/javascript">    
+    
+    
+    
+    $(function () {
+
+        var cal = new Calendar();
+        cal.generateHTML();
+        $('#calendar').Calendar(cal.getHTML());
+    });
+</script>
+
+{{ source('Booking-tmpl.html', ignore_missing = true) }}
+
+{% endblock %}
