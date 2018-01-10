@@ -11,10 +11,14 @@ use \Tsugi\Util\Net;
 
 class Booking {
     
-    public function get(Request $request, Application $app)
+    public function getPage(Request $request, Application $app)
     {
         global $CFG, $PDOX;
         $context = array();
+        $context['styles'] = [ addSession( $CFG->staticroot .'/css/app.css'), addSession('assets/css/app.css') ];
+        $context['json'] = '[{"month": 6, "bookings": "1" }]';
+        
+        /*
         $context['old_code'] = Settings::linkGet('code', '');
 
         $p = $CFG->dbprefix;
@@ -25,7 +29,42 @@ class Booking {
             );
             $context['rows'] = $rows;
         }
+        */
+
         return $app['twig']->render('Booking.twig', $context);
+    }
+
+    public function getFile(Request $request, Application $app, $file = '')
+    {
+        if (empty($file)) {
+            $app->abort(400);
+        }
+
+        switch (strtolower(pathinfo($file, PATHINFO_EXTENSION))) {
+            case 'css' : {
+                $contentType = 'text/css';
+                break;
+            }
+            case 'js' : {
+                $contentType = 'application/javascript';
+                break;
+            }
+            case 'xml' : {
+                $contentType = 'text/xml';
+                break;
+            }
+            case 'svg' : {
+                $contentType = 'image/svg+xml';
+                break;
+            }
+            default : {
+                $contentType = 'text/plain';
+            }
+        }
+
+        return new Response( file_get_contents( __DIR__ ."/../../assets/". $file), 200, [ 
+            'Content-Type' => $contentType
+        ]);
     }
 
     public function post(Request $request, Application $app)

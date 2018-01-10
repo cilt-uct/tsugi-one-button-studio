@@ -4,8 +4,6 @@
         RewriteCond %{HTTPS} on
         RewriteRule ^ - [E=protossl:s]
 
-        RewriteRule "^scheduler(.*)$" scheduler.php?path=$1 [NC,L,QSA]
-
         # Root folder all alone
         RewriteRule "^/$" index.php [L]
         # Root folder with GET parameters

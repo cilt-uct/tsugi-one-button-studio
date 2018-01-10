@@ -1,3 +1,87 @@
-<script type="text/x-tmpl" id="tmpl-options-title">
-    <i class="glyphicon"></i> My Choices <span class="small">({%=o.len%})</span>
-</script>    
+<script type="text/x-tmpl" id="tmpl-calendar">
+    {%
+    var CurrentYear = y = 2017;
+    var CurrentMonth = m = 5;
+    var f='dd/mm/yyyy';
+
+    typeof(y) == 'number' ? CurrentYear = y: null;
+    typeof(y) == 'number' ? CurrentMonth = m: null;
+
+    // 1st day of the selected month
+    var firstDayOfCurrentMonth = new Date(y, m, 1).getDay();
+
+    // Last date of the selected month
+    var lastDateOfCurrentMonth = new Date(y, m + 1, 0).getDate();
+    var lastDateOfLastMonth = m == 0 ? new Date(y - 1, 11, 0).getDate() : new Date(y, m, 0).getDate();
+    var lastMonth = arr_months_short[ (m-1)%11 ];
+    var stcurrentMonth = arr_months_short[ m ];
+    var nextMonth = arr_months_short[ (m+1)%11 ];
+
+    %}
+    <table class="calendar-table">
+        <thead>
+            <tr>
+                {% for(var i = 0, len = arr_days.length-1; i <= len; i++ ){ %}<th>{%=arr_days[i]%}</th>{% } %}
+            </tr>
+        </thead>
+        <tbody>
+    {%
+
+    var p = dm = f == 'M' ? 1 : firstDayOfCurrentMonth == 0 ? -5 : 2;
+
+    var klen = 8;
+    var cellvalue;
+    for (var d, i = 0, z0 = 0; z0 < 6; z0++) { %}<tr>{%
+
+        for (var z0a = 0; z0a < 7; z0a++) {
+            d = i + dm - firstDayOfCurrentMonth;
+
+            // Dates from prev month
+            if (d < 1) {
+                cellvalue = lastDateOfLastMonth - firstDayOfCurrentMonth + (p++);
+                %}<td class="prev">
+                    <div class="day">{%=(cellvalue)%}</div>
+                    <div>
+                        {% for (var k=0; k <= klen; k++) { %}<div id="d_{%=(m-1)%}_{%=cellvalue%}_{%=(k+8)%}"></div>{% } %}
+                    </div>
+                </td>{%                     
+
+                lastMonth = "";
+        
+            } else if (d > lastDateOfCurrentMonth) {
+                
+                p++;
+                %}<td class="next">
+                    <div class="day">{%=(nextMonth != "" ? nextMonth +" ":"") + (p)%}</div>
+                    <div>
+                        {% for (var k=0; k <= klen; k++) { %}<div id="d_{%=m%}_{%=p%}_{%=(k+8)%}"></div>{% } %}
+                    </div>
+                </td>{%             
+
+                nextMonth = "";
+            } else {
+
+                 %}<td class="current">
+                    <div class="day">{%=(stcurrentMonth != "" ? stcurrentMonth +" ":"") + (d)%}</div>
+                    <div>
+                        {% for (var k=0; k <= klen; k++) { %}<div id="d_{%=(m+1)%}_{%=d%}_{%=(k+8)%}"></div>{% } %}
+                    </div>
+                </td>{%
+
+                p = 1;
+                stcurrentMonth = '';
+            }
+
+
+            if (i % 7 == 6 && d >= lastDateOfCurrentMonth) {
+                 z0 = 10; // no more rows
+            }
+
+            i++;
+        }
+
+        %}</tr>{%
+    } 
+    %}
+    </tbody></table>
+</script>
