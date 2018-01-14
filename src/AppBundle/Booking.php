@@ -16,7 +16,14 @@ class Booking {
         global $CFG, $PDOX;
         $context = array();
         $context['styles'] = [ addSession( $CFG->staticroot .'/css/app.css'), addSession('assets/css/app.css') ];
-        $context['json'] = '[{"month": 6, "bookings": "1" }]';
+        $context['scripts'] = [ addSession('assets/js/moment.min.js') ];
+        $context['booking_set'] = addSession('booking/set');
+
+        $current = (object)[];
+        $current->date = date("Y-n", time()); //"2018-4"
+        $current->bookings = [];
+
+        $context['json'] = json_encode($current);
         
         /*
         $context['old_code'] = Settings::linkGet('code', '');
@@ -67,8 +74,33 @@ class Booking {
         ]);
     }
 
-    public function post(Request $request, Application $app)
+    public function setBooking(Request $request, Application $app)
     {
+        global $CFG, $PDOX;
+        $p = $CFG->dbprefix;
+        
+        $response = array( 'status' => false);
+
+        if ( isset($_POST['title']) && $app['tsugi']->user->instructor ) {
+            
+            $input = $_POST;
+
+            $q = $PDOX->queryDie("INSERT INTO {$p}booking
+                (link_id, user_id, booking, title, updated_at)
+                VALUES ( :LI, :UI, :BOOKING, :TITLE, NOW())
+                ON DUPLICATE KEY UPDATE booking = :BOOKING",
+                array(
+                    ':LI' => $app['tsugi']->link->id,
+                    ':UI' => $app['tsugi']->user->id,
+                    ':TITLE' => $input['title'],
+                    ':BOOKING' => $input['date']
+                )
+            );
+
+            $response['result'] = $q;
+        } 
+        
+        /*
         global $CFG, $PDOX;
         $p = $CFG->dbprefix;
         $old_code = Settings::linkGet('code', '');
@@ -96,7 +128,8 @@ class Booking {
             } else {
                 $app->tsugiFlashSuccess(__('Code incorrect'));
             }
-        }
-        return $app->tsugiReroute('main');
+        }*/
+
+        return json_encode($response);
     }
 }

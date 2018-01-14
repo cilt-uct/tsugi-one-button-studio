@@ -49,10 +49,10 @@
             <div id="schedule" class="tab-content">
                 <div class="row">
                     <div class="col-xs-9 text-center" style="padding-top: 12px;margin-bottom: 0px;">
-                        <h4>
-                            <span class="glyphicon glyphicon-chevron-left"></span>
-                            June, 2017 
-                            <span class="glyphicon glyphicon-chevron-right"></span>
+                        <h4 id="month-title-container">
+                            <a href="#" class="glyphicon glyphicon-chevron-left"></a>
+                            <span id="month-title"></span>
+                            <a href="#" class="glyphicon glyphicon-chevron-right"></a>
                         </h4>
                     </div>
                     <div id="timer-container" class="col-xs-3">
@@ -93,7 +93,7 @@
                             <div class="legend row">
                                 <div class="col-xs-12">
                                     <div class="box"></diV>
-                                    <div class="text">Unavailable</diV>
+                                    <div class="text">Available</diV>
                                 </div>
                                 <div class="col-xs-12">
                                     <div class="box me"></diV>
@@ -101,7 +101,7 @@
                                 </div>
                                 <div class="col-xs-12">
                                     <div class="box used"></diV>
-                                    <div class="text">Available</diV>
+                                    <div class="text">Unavailable</diV>
                                 </div>
                             </div>
                         </div>
@@ -113,43 +113,52 @@
 {% endblock %}
 
 {% block footer %}
+{% for script in scripts %}
+    <script src="{{script}}" type="text/javascript"></script>
+{% endfor %}
     <script type="text/javascript">    
-            function getObj(id, arr, key) { key = key || 'id'; var o = null; $.each(groups, function (i, el) { if (el[key] == id) { o=el; return; } }); return o; };
-            var raw = {{json | raw }};
+        var initial_data = {{json | raw }}, data = [], current_date = new Date(), current = {};
 
-        var arr_days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        var arr_months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-        var arr_months_short = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        var days_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        var defaultLocaleWeekdaysShort = 'Sun_Mon_Tue_Wed_Thu_Fri_Sat'.split('_');
+
+        function getObj(id, arr, key) { key = key || 'id'; var o = null; $.each(arr, function (i, el) { if (el[key] == id) { o=el; return; } }); return o; };
+        function getDisplayData(d, arr) { var o = null; $.each(arr, function (i, el) { if (el.date === d) { o=el; return; } }); return o; };
         
-        // this is the current date
-        var current = new Date(); 
+        function displayCurrent() {
+            current = getDisplayData(current_date.format("YYYY-MM"), data);
+
+            $('#month-title').html(current_date.format('MMMM, YYYY'));
+            $('#calendar').html(tmpl('tmpl-calendar', {date: current_date, data: current}));
+        }
 
         $(function () {
-            
-            //var cal = new Calendar();
-            //cal.generateHTML();
-            $('#calendar').html(tmpl('tmpl-calendar', {date: new Date()}));
-            $('#d_6_5_11').addClass("used");
-            $('#d_6_5_13').addClass("me");
+            data.push(initial_data);
 
-            // Smiley
-            //$('#d_6_16_12, #d_6_16_13, #d_6_16_15, #d_6_16_16').addClass("used");
-            //$('#d_6_17_11, #d_6_17_12, #d_6_17_14, #d_6_17_15').addClass("used");
-            //$('#d_6_23_11, #d_6_23_15, #d_6_23_16, #d_6_24_14, #d_6_24_15, #d_6_24_13').addClass("used");
+            current_date = moment(initial_data.date, "YYYY-MM");
+            displayCurrent();
 
-            // var j=[]; $('.used').each(function(i, el){ j.push('#'+$(this).attr('id')); }); j.join(", ");
-            /*
-            $('.calendar-table td > div > div').click(function(){ 
-
-                if (!$(this).hasClass("me")) {
-                    $(this).toggleClass("used"); 
-                }
+            $('#calendar').on('click', '.current div[id*=d_]', function(event) {
+                var _id = $(this).attr('id'),
+                    _date = moment(_id,'#_M_D_H');
+                
+                $.post('{{booking_set}}', { title: 'Test', date: _date.format('YYYY-MM-DD HH:mm:ss') }, function( data ) {
+                   console.log(data);
+                }).fail(function() {
+                    alert( "error" );
+                });
             });
-            */
-            $("#d_6_1_12, #d_6_2_10, #d_6_2_12, #d_6_3_11, #d_6_4_12, #d_6_5_11, #d_6_6_9, #d_6_7_8, #d_6_7_11, #d_6_7_12, #d_6_8_8, #d_6_8_9, #d_6_9_8, #d_6_9_12, #d_6_10_15, #d_6_11_9, #d_6_11_15, #d_6_12_8, #d_6_12_11, #d_6_13_11, #d_6_13_12, #d_6_13_15, #d_6_14_14, #d_6_15_8, #d_6_15_9, #d_6_15_10, #d_6_16_12, #d_6_16_13, #d_6_16_15, #d_6_16_16, #d_6_17_11, #d_6_17_12, #d_6_17_14, #d_6_17_15, #d_6_19_8, #d_6_19_9, #d_6_19_12, #d_6_20_8, #d_6_20_12, #d_6_20_13, #d_6_23_11, #d_6_23_15, #d_6_23_16, #d_6_24_13, #d_6_24_14, #d_6_24_15, #d_6_25_10, #d_6_25_15, #d_6_26_13, #d_6_26_14, #d_6_26_15, #d_6_26_16, #d_6_27_8, #d_6_27_10, #d_6_28_11, #d_6_29_8, #d_6_29_9, #d_6_29_10").addClass("used");
 
-            $('#agenda, #d_6_5_13').click(function(event){ event.preventDefault(); $('#myModal').modal('show'); });
+            $('#month-title-container').on('click', '.glyphicon-chevron-left', function(event) {
+                event.preventDefault();
+                current_date.subtract(1, 'months');
+                displayCurrent();
+            });
+
+            $('#month-title-container').on('click', '.glyphicon-chevron-right', function(event) {
+                event.preventDefault();
+                current_date.add(1, 'months');
+                displayCurrent();
+            });
 
             $(".nav-tabs").on('click','a', function(event){
                 event.preventDefault();

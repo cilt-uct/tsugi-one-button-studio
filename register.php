@@ -1,8 +1,11 @@
 <?php
 
 $REGISTER_LTI2 = array(
-    "name" => "Simple Booking Tool",
-    "FontAwesome" => "fa-server",
-    "short_name" => "Booking Tool",
-    "description" => "Test booking tool."
-);
+    "name" => "One Button Studio",
+    "FontAwesome" => "fa-calendar-check-o",
+    "short_name" => "One Button Studio",
+    "description" => "This tool has a booking system, editing and managing of recordings made through using the One Button Studio.",
+    "messages" => array("launch")
+    );
+    
+    

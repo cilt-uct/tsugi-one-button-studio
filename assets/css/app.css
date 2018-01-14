@@ -2,3 +2,134 @@
   box-sizing: border-box;
 }
 
+#application h4 {
+  font-family: 'Roboto',sans-serif;
+  font-weight: 300;
+  font-size: 2em;
+}
+
+#application h4 span, #application h4 a {
+  color: #666;
+}
+
+#application h4 a {
+  text-decoration: none;
+  position: relative;
+  top: 1px;
+  display: inline-block;
+}
+
+#application h4 a:hover, 
+#application h4 a:active {
+  color: #333;
+}
+
+#application h4 a:active {
+  top: 3px;
+}
+
+#application h4 a.glyphicon-chevron-left:first-child {
+  padding-right: 20px;
+}
+
+#application h4 a.glyphicon-chevron-right:last-child {
+  padding-left: 20px;
+}
+
+#application .legend {
+  margin-top: 395px;
+  padding-left: 20px;
+}
+
+#application .legend div.text {
+  padding-top: 2px;
+  color: #999;
+  font-size: 12px;
+}
+#application .legend div.box,
+#application .legend div.me,
+#application .legend div.used  {
+  border: 1px solid #ccc;
+  background-color: #eee;
+  width: 20px;
+  height: 20px;
+  margin-right: 0.3em;
+  margin-bottom: 0.3em;
+  float: left;
+  cursor: pointer;
+}
+
+#application .legend div.me {
+  border: 1px solid #449d44;
+  background-color: #449d44;
+}
+
+#application .legend div.used {
+  border: 1px solid #5bc0de;
+  background-color: #46b8da;
+}
+
+#application table.calendar-table {
+  border-right: 1px solid #EAEAEA;
+  width: 100%;
+}
+
+#application table.calendar-table thead th {
+  /*width: 125px;*/
+}
+
+#application table.calendar-table td {
+  border-bottom: 1px solid #EAEAEA;
+  /*height: 118px;*/
+}
+
+#application table.calendar-table td div.day {
+  color: #767676;
+  font-size: 18px;
+  font-weight: 200;
+  margin-left: 0.8em;
+}
+
+#application table.calendar-table td div > div {
+  border: 1px solid #ccc;
+  background-color: #eee;
+  width: 22px;
+  height: 22px;
+  margin-right: 0.8em;
+  margin-bottom: 0.8em;
+  float: left;
+  cursor: pointer;
+}
+
+#application table.calendar-table td > div:last-child {
+  margin-left: 0.8em;
+}
+
+#application table.calendar-table td.current div > div:hover {
+  border-color: #999;
+  box-shadow: 0 3px 2px #777;
+}
+
+#application table.calendar-table td.prev div,
+#application table.calendar-table td.next div  {
+  opacity: 0.5;
+  cursor: default;
+}
+
+#application table.calendar-table td div > div.me {
+  border: 1px solid #449d44;
+  background-color: #449d44;
+}
+
+#application table.calendar-table td div > div.me:hover {
+  border-color: #2D682D;
+}
+
+#application table.calendar-table td div > div.used {
+  border: 1px solid #5bc0de;
+  background-color: #46b8da;
+}
+
+#application table.calendar-table td div > div.used:hover {
+  border-color: #20839F;
+}

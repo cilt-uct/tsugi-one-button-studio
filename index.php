@@ -20,6 +20,6 @@ $app->register(new Silex\Provider\AssetServiceProvider(), array(
 
 $app->get('/', 'AppBundle\\Booking::getPage')->bind('main');
 $app->get('assets/{file}', 'AppBundle\\Booking::getFile')->assert('file', '.+');
-$app->post('/', 'AppBundle\\Booking::post');
+$app->post('/booking/set', 'AppBundle\\Booking::setBooking');
 
 $app->run();
