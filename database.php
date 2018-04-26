@@ -11,14 +11,15 @@ $DATABASE_INSTALL = array(
 array( "{$CFG->dbprefix}booking",
 "create table {$CFG->dbprefix}booking (
     booking_id int(11) unsigned NOT NULL AUTO_INCREMENT,
-    link_id     INTEGER NOT NULL,
-    user_id     INTEGER NOT NULL,    
-    booking     TIMESTAMP  NOT NULL,
-    title       VARCHAR(255) NOT NULL DEFAULT '',
-    settings    mediumtext,
-    updated_at  DATETIME NOT NULL,
-    pre         tinyint(1) unsigned NOT NULL DEFAULT '0',
-    pre_expire  TIMESTAMP  NOT NULL,
+    link_id        INTEGER NOT NULL,
+    user_id        INTEGER NOT NULL,
+    booking_start  TIMESTAMP  NOT NULL,
+    booking_end    TIMESTAMP NULL,
+    title          VARCHAR(255) NOT NULL DEFAULT '',
+    settings       mediumtext,
+    updated_at     DATETIME NOT NULL,
+    pre            tinyint(1) unsigned NOT NULL DEFAULT '0',
+    pre_expire     VARCHAR(255) NULL,
 
     CONSTRAINT `{$CFG->dbprefix}booking_ibfk_1`
         FOREIGN KEY (`link_id`)

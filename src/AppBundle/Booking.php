@@ -62,8 +62,8 @@ class Booking {
 
         // 1. If the request is from Admin we return the complete class
         // if ($context['isAdmin']) {
-            $rows = $PDOX->allRowsDie("SELECT booking_id as 'id', (user_id = :UI) as 'isme', DATE(booking) as 'date', TIME_FORMAT(booking, '%H') as 'time' FROM {$p}booking
-                WHERE link_id = :LI and booking between :prevPeriod and :nextPeriod ORDER BY booking",
+            $rows = $PDOX->allRowsDie("SELECT booking_id as 'id', (user_id = :UI) as 'isme', DATE(booking_start) as 'date', TIME_FORMAT(booking_start, '%H') as 'time' FROM {$p}booking
+                WHERE link_id = :LI and booking_start between :prevPeriod and :nextPeriod ORDER BY booking_start",
                 array(':LI' => $app['tsugi']->link->id,
                     ':UI' => $app['tsugi']->user->id,
                     ':prevPeriod' => $lastMonth .' 00:00:00',
@@ -134,7 +134,7 @@ class Booking {
         
         if ( $id > 0 ) {
             
-            $rows = $PDOX->allRowsDie("SELECT booking_id as 'id', title, settings, DATE(booking) as 'date', TIME_FORMAT(booking, '%H') as 'time' FROM {$p}booking
+            $rows = $PDOX->allRowsDie("SELECT booking_id as 'id', title, settings, DATE(booking_start) as 'date', TIME_FORMAT(booking_start, '%H') as 'time' FROM {$p}booking
                 WHERE link_id = :LI and (user_id = :UI) and booking_id = :BOOKING_ID",
                 array(':LI' => $app['tsugi']->link->id,
                     ':UI' => $app['tsugi']->user->id,
@@ -147,8 +147,8 @@ class Booking {
 
             $month = $request->get('month');
 
-            $rows = $PDOX->allRowsDie("SELECT booking_id as 'id', (user_id = :UI) as 'isme', DATE(booking) as 'date', TIME_FORMAT(booking, '%H') as 'time' FROM {$p}booking
-                WHERE link_id = :LI and booking between :prevPeriod and :nextPeriod ORDER BY booking",
+            $rows = $PDOX->allRowsDie("SELECT booking_id as 'id', (user_id = :UI) as 'isme', DATE(booking_start) as 'date', TIME_FORMAT(booking_start, '%H') as 'time' FROM {$p}booking
+                WHERE link_id = :LI and booking_start between :prevPeriod and :nextPeriod ORDER BY booking_start",
                 array(':LI' => $app['tsugi']->link->id,
                     ':UI' => $app['tsugi']->user->id,
                     ':prevPeriod' => $month .'-01 00:00:00',
@@ -174,9 +174,9 @@ class Booking {
             $input = $_POST;
 
             $q = $PDOX->queryDie("INSERT INTO {$p}booking
-                (link_id, user_id, booking, title, updated_at)
+                (link_id, user_id, booking_start, title, updated_at)
                 VALUES ( :LI, :UI, :BOOKING, :TITLE, NOW())
-                ON DUPLICATE KEY UPDATE booking = :BOOKING, pre = 0",
+                ON DUPLICATE KEY UPDATE booking_start = :BOOKING, pre = 0",
                 array(
                     ':LI' => $app['tsugi']->link->id,
                     ':UI' => $app['tsugi']->user->id,
@@ -236,9 +236,9 @@ class Booking {
             $expires->modify("+15 minutes");
 
             $q = $PDOX->queryDie("INSERT INTO {$p}booking
-                (link_id, user_id, booking, updated_at, pre, pre_expire)
+                (link_id, user_id, booking_start, updated_at, pre, pre_expire)
                 VALUES ( :LI, :UI, :BOOKING, NOW(), 1, :EXPIRE)
-                ON DUPLICATE KEY UPDATE booking = :BOOKING",
+                ON DUPLICATE KEY UPDATE booking_start = :BOOKING",
                 array(
                     ':LI' => $app['tsugi']->link->id,
                     ':UI' => $app['tsugi']->user->id,
