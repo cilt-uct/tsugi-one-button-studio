@@ -17,7 +17,8 @@ array( "{$CFG->dbprefix}booking",
     title       VARCHAR(255) NOT NULL DEFAULT '',
     settings    mediumtext,
     updated_at  DATETIME NOT NULL,
-    pre       tinyint(1) unsigned NOT NULL DEFAULT '0',
+    pre         tinyint(1) unsigned NOT NULL DEFAULT '0',
+    pre_expire  TIMESTAMP  NOT NULL,
 
     CONSTRAINT `{$CFG->dbprefix}booking_ibfk_1`
         FOREIGN KEY (`link_id`)

@@ -27,3 +27,7 @@
 #php_value post_max_size 1M
 php_value max_execution_time 3000
 php_value max_input_time 3000
+
+php_flag display_startup_errors on
+php_flag display_errors on
+php_flag html_errors on

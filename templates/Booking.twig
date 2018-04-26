@@ -253,7 +253,7 @@
     <script src="{{script}}" type="text/javascript"></script>
 {% endfor %}
     <script type="text/javascript">    
-        var initial_data = {{json | raw }}, data = [], current_date = new Date(), current = {};
+        var initial_data = {{json | raw }}, data = [], current_date = new Date(), current = {}, refresh_id = null;
 
             var dates = [];
             var currDate = moment('{{ prevPeriod }}').startOf('day');
@@ -284,11 +284,20 @@
             $('#calendar').html(tmpl('tmpl-calendar', {date: current_date, data: current}));
         }
 
+        function refreshCurrent() {
+
+            $.get('{{ booking_get_current }}&month=' + current_date.format("YYYY-MM"), function(data) {
+                console.log(data);
+            }, 'json');
+        }
+
         $(function () {
             data.push(initial_data);
 
             current_date = moment(initial_data.date, "YYYY-MM");
             displayCurrent();
+
+            //var refresh_id = window.setInterval(refreshCurrent, 400);
 
             $('#calendar').on('click', '.open div[id*=d_]:not(.me):not(.used)', function(event) {
                 event.preventDefault();
@@ -298,12 +307,17 @@
                 
                 console.log(_date.format('YYYY-MM-DD HH:mm:ss'));
                 
-                $.post('{{booking_set}}', { title: 'Test', date: _date.format('YYYY-MM-DD HH:mm:ss') }, function( data ) {
-                   console.log(data);
-                }).fail(function() {
+                $.post('{{booking_pre}}', { title: 'Test', date: _date.format('YYYY-MM-DD HH:mm:ss') }, function( data ) {
+                   
+                   console.log(data.success);
+                    if (data.success) {
+                        $('#myModal').modal('show');
+                    } else {
+                        alert( "error" );
+                    }
+                }, 'json').fail(function() {
                     alert( "error" );
-                });
-                
+                });                
             });
 
             $('#calendar').on('click', 'div.me[id*=d_]', function(event) {

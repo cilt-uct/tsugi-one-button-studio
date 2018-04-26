@@ -22,5 +22,6 @@ $app->get('/', 'AppBundle\\Booking::getPage')->bind('main');
 $app->get('assets/{file}', 'AppBundle\\Booking::getFile')->assert('file', '.+');
 $app->get('/booking/{id}', 'AppBundle\\Booking::getBooking');
 $app->post('/booking/set', 'AppBundle\\Booking::setBooking');
+$app->post('/booking/pre', 'AppBundle\\Booking::preBooking');
 
 $app->run();
