@@ -38,9 +38,10 @@ class Booking {
         $context['scripts'] = [ addSession('assets/js/moment.min.js'), addSession('assets/js/moment.min.js'), 
                                 addSession('assets/js/amcharts/amcharts.js'), addSession('assets/js/amcharts/serial.js'), addSession('assets/js/amcharts/themes/light.js') ];
 
-        $context['booking_set'] = addSession('booking/set');
+        $context['booking_set'] = addSession('api/booking');
         $context['booking_pre'] = addSession('booking/pre');
-        $context['booking_get'] = addSession('booking/{id}');
+        $context['booking_get'] = addSession('api/booking/{id}');
+        $context['bookings_get'] = addSession('api/booking');
         $context['booking_get_current'] = addSession('booking/month');
 
         $context['isAdmin'] = $app['tsugi']->user->id == $settings['admin'];

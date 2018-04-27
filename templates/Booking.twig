@@ -15,6 +15,7 @@
                 {% if isAdmin %}<li class="active"><a href="#" rel="admin">Dashboard</a></li>{% endif %}
                 <li {% if not isAdmin %} class="active" {% endif %}><a href="#" rel="schedule">Schedule</a></li>
                 <li><a href="#" rel="rec">Recordings</a></li>
+                <li><a href="#" rel="api">API</a></li>
             </ul>
             
             <div id="rec" class="tab-content" style="display:none">
@@ -46,6 +47,68 @@
                     </table>
                 </div>
             </div>
+            <style>
+             ul.table {
+               list-style: none;
+               padding: 10px;
+             }
+             ul.table li {
+               border-bottom: 1px solid #eee;
+               margin-bottom: 3rem;
+             }
+             .serverResponse {
+               margin-top: 10px;
+               display: block;
+               white-space: pre-wrap;
+             }
+             .serverResponse:not(:empty) {
+               border: 1px solid #ccc;
+               background: #eee;
+               padding: 10px;
+               font-family: monospace, monospace;
+               margin-bottom: 10px;
+             }
+            </style>
+            <div id="api" class="tab-content" style="display:none">
+                <h4>Available endpoint/method combinations in the API</h4>
+                <ul class="table table-bordered">
+                  <li>
+                    <h4>GET <span>api/booking/?params</span></h4>
+                    <p>Returns a list of bookings, constrained by optional GET parameters <i>params</i>.</p>
+                    <p>Default: returns a (possibly empty) list of the next 8 hours' of bookings ordered by start time ascending.</p>
+                    <form action="{{ bookings_get }}">
+                      <button>Run query</button>
+                    </form>
+                    <code class="serverResponse"></code>
+                  </li>
+                  <li>
+                    <h4>GET <span data-baseaction="{{ booking_get }}">api/booking/{id}</span></h4>
+                    <p>Returns the scheduling information for booking with id <i>{id}</i>.</p>
+                    <p>Status codes: 200 (found), 404 (not found subject to user's credentials)</p>
+                    <form action="{{ booking_get }}" data-baseaction="{{ booking_get }}">
+                      <p><input type="number" name="id" data-replace="{id}" /></p>
+                      <button>Run query</button>
+                    </form>
+                    <code class="serverResponse"></code>
+                  </li>
+                  <li>
+                    <h4>POST <span>api/booking/</span></h4>
+                    <p>Creates a booking.</p>
+                    <p>Server response: returns the scheduling information of the resultant booking.</p>
+                    <p>Status codes: 201 (created), 409 (not created due to conflicting event), 400 (not created due to user input)</p>
+                    <form action="{{ booking_set }}" method="post">
+                      <p><input name="title" placeholder="Title" /></p>
+                      <p><input name="start_date" placeholder="Date" type="datetime-local" /></p>
+                      <p><input name="end_date" placeholder="Date" type="datetime-local" /></p>
+                      <button>Run query</button>
+                    </form>
+                    <code class="serverResponse"></code>
+                  </li>
+                </ul>
+            </div>
+
+            <script>
+            </script>
 
             {% if isAdmin %}
             <div id="admin" class="tab-content">
@@ -339,6 +402,57 @@
                         alert( "error" );
                     });
                 }
+            });
+
+
+            $('#api form').on('submit', function(e) {
+                e.preventDefault();
+                var method = $(this).attr('method') || 'GET';
+                var action = $(this).attr('action');
+                var fd = new FormData();
+                var hasData = false;
+                $(this).find('input,textarea,select').each(function() {
+                    if (this.name && this.value) {
+                        hasData = true;
+                        fd.append(this.name, this.value);
+                    }
+                });
+                var ajaxOpts = {
+                    url: action,
+                    type: method,
+                    dataType: 'text'
+                };
+
+                if (hasData) {
+                    ajaxOpts.data = fd;
+                        ajaxOpts.processData = false;
+                        ajaxOpts.cache = false;
+                        ajaxOpts.contentType = false;
+                }
+                $.ajax(ajaxOpts)
+                    .done(function(res) {
+                      $(e.target).siblings('.serverResponse').text(res);
+                    })
+                    .fail(function(err) {
+                      $(e.target).siblings('.serverResponse').text(JSON.stringify(err));
+                    });
+            });
+
+            $('#api form[data-baseaction]').on('input', 'input,textarea,select', function(e) {
+                var alteredAction = $(this).parents('form').data('baseaction');
+                var replacements = {};
+                $(this).parents('form').find('[data-replace]').each(function() {
+                    replacements[$(this).data('replace')] = this.value;
+                });
+                for (var key in replacements) {
+                    if (replacements[key]) {
+                        alteredAction = alteredAction.replace(key, replacements[key]);
+                    }
+                }
+                $(this).parents('form')
+                    .attr('action', alteredAction)
+                    .siblings('h4')
+                        .find('[data-baseaction]').text(alteredAction.substring(0, alteredAction.indexOf('?PHPSESSID'))); //<-- handle GET params better
             });
 
             $('#month-title-container').on('click', '.glyphicon-chevron-left', function(event) {

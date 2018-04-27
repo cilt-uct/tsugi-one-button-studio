@@ -20,8 +20,12 @@ $app->register(new Silex\Provider\AssetServiceProvider(), array(
 
 $app->get('/', 'AppBundle\\Booking::getPage')->bind('main');
 $app->get('assets/{file}', 'AppBundle\\Booking::getFile')->assert('file', '.+');
-$app->get('/booking/{id}', 'AppBundle\\Booking::getBooking');
 $app->post('/booking/set', 'AppBundle\\Booking::setBooking');
 $app->post('/booking/pre', 'AppBundle\\Booking::preBooking');
+$app->get('/api/booking/{id}', 'AppBundle\\Api::getBooking');
+$app->get('/api/booking', 'AppBundle\\Api::getBookings');
+$app->get('/api/booking/', 'AppBundle\\Api::getBookings');
+$app->post('/api/booking', 'AppBundle\\Api::setBooking');
+$app->post('/api/booking/', 'AppBundle\\Api::setBooking');
 
 $app->run();
