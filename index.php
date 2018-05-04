@@ -28,4 +28,7 @@ $app->get('/api/booking/', 'AppBundle\\Api::getBookings');
 $app->post('/api/booking', 'AppBundle\\Api::setBooking');
 $app->post('/api/booking/', 'AppBundle\\Api::setBooking');
 
+$app->get('/api/series/', 'AppBundle\\Api::getAllPersonalSeries');
+$app->get('/api/beries/', 'AppBundle\\Api::addOBStool');
+
 $app->run();

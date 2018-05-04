@@ -3,7 +3,8 @@
 // The SQL to uninstall this tool
 $DATABASE_UNINSTALL = array(
 "drop table if exists {$CFG->dbprefix}booking",
-"drop table if exists {$CFG->dbprefix}booking_attachments"
+"drop table if exists {$CFG->dbprefix}booking_attachments",
+"drop table if exists {$CFG->dbprefix}booking_series"
 );
 
 // The SQL to create the tables if they don't exist
@@ -56,6 +57,18 @@ array( "{$CFG->dbprefix}booking_attachments",
         
     PRIMARY KEY (`id`),
     UNIQUE(booking_id, file_id, id)
+) ENGINE = InnoDB DEFAULT CHARSET=utf8"),
+
+array( "{$CFG->dbprefix}booking_series",
+"create table {$CFG->dbprefix}booking_series (
+    id int(11) unsigned PRIMARY KEY AUTO_INCREMENT,
+    user_id VARCHAR(255) NOT NULL,
+    series_id VARCHAR(50) NOT NULL,
+    workspace_id VARCHAR(50) NOT NULL,
+    date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE(user_id)
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8")
+
 );
 
