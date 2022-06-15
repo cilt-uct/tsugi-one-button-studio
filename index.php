@@ -10,6 +10,14 @@ ini_set('display_errors', '1');
 
 $launch = LTIX::requireData();
 
+if ( $USER->instructor ) {
+    header( 'Location: '.addSession('instructor-home.php') ) ;
+} else {
+    header( 'Location: '.addSession('student-home.php') ) ;
+}
+
+
+/*
 $path = $CFG->getPWD('index.php');
 $app = new \Tsugi\Silex\Application($launch);
 
@@ -32,3 +40,4 @@ $app->get('/api/series/', 'AppBundle\\Api::getAllPersonalSeries');
 $app->get('/api/beries/', 'AppBundle\\Api::addOBStool');
 
 $app->run();
+*/

@@ -92,8 +92,7 @@ class Booking {
         return $app['twig']->render('Booking.twig', $context);
     }
 
-    public function getFile(Request $request, Application $app, $file = '')
-    {
+    public function getFile(Request $request, Application $app, $file = '') {
         if (empty($file)) {
             $app->abort(400);
         }
@@ -125,8 +124,7 @@ class Booking {
         ]);
     }
 
-    public function getBooking(Request $request, Application $app)
-    {
+    public function getBooking(Request $request, Application $app) {
         global $CFG, $PDOX;
         $p = $CFG->dbprefix;
         $id = str_replace('/booking/', '', $request->getPathInfo());
@@ -163,8 +161,7 @@ class Booking {
         return json_encode($response);
     }
 
-    public function setBooking(Request $request, Application $app)
-    {
+    public function setBooking(Request $request, Application $app) {
         global $CFG, $PDOX;
         $p = $CFG->dbprefix;
         
@@ -222,8 +219,7 @@ class Booking {
         return json_encode($response);
     }
 
-    public function preBooking(Request $request, Application $app)
-    {
+    public function preBooking(Request $request, Application $app) {
         global $CFG, $PDOX;
         $p = $CFG->dbprefix;
         
@@ -255,8 +251,7 @@ class Booking {
         return json_encode($response);
     }
 
-    public function CreateSeries($name, $display, $source_id, $context_id)
-    {        
+    public function CreateSeries($name, $display, $source_id, $context_id) {        
         $username = 'PersonalSeriesCreator';
         $password = 'tester';
         $remote_url = 'https://mediadev.uct.ac.za/api/series';

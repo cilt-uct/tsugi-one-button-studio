@@ -1,5 +1,5 @@
 <script type="text/x-tmpl" id="tmpl-calendar">
-    {%  var current = o.date.startOf('month'),
+    {%  var current = moment(o.date).startOf('month'),
             prev = current.clone().subtract(1, 'months'),
             next = current.clone().add(1, 'months'),
             today = moment(),
@@ -40,7 +40,7 @@
            arr = initial_data.bookings.filter(z => z.date == day.format('YYYY-MM-DD'));
     %}
     <div class="{%=(o.cls)%}{%=(day > o.last?' open':'')%}{%=(day.format('YYYY-MM-DD') == o.today.format('YYYY-MM-DD')?' today':'')%}" data-day="{%=(day.day())%}" data-iso="{%=(day.isoWeekday())%}">
-        <span class="day">{%=((o.s != "" ? o.s +" ":"") + o.d)%}</span>
+        <span class="day">{%#((o.s != "" ? "<span>"+o.s +"</span> ":"") + o.d)%}</span>
         {% if (day.isoWeekday() <= 5) { %}
         <div>
             {% for (var k=8; k <= 15; k++) { 

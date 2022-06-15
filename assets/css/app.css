@@ -159,6 +159,14 @@
   grid-column: span 1;
 }
 
+#application #calendar #calendar-body div .day span {
+  opacity: 0.8;
+}
+
+#application #calendar #calendar-body div[data-day="0"] .day span {
+  display: block;
+}
+
 #application #calendar #calendar-body > div > div {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(28px, 1fr));
@@ -216,4 +224,27 @@
   grid-template-columns: 3fr 1fr;
   grid-gap: 0;
   max-width: 100%;
+}
+
+/*//////////////////////////////////*/
+
+ul.table {
+  list-style: none;
+  padding: 10px;
+}
+ul.table li {
+  border-bottom: 1px solid #eee;
+  margin-bottom: 3rem;
+}
+.serverResponse {
+  margin-top: 10px;
+  display: block;
+  white-space: pre-wrap;
+}
+.serverResponse:not(:empty) {
+  border: 1px solid #ccc;
+  background: #eee;
+  padding: 10px;
+  font-family: monospace, monospace;
+  margin-bottom: 10px;
 }
