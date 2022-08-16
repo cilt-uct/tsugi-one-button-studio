@@ -1,7 +1,7 @@
 <?php
 namespace Booking\DAO;
 
-### Sakai Web Service
+### Sakai Web Service [deprecated]
 
 class SakaiWS {
     

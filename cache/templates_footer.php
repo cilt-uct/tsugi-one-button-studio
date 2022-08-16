@@ -3,14 +3,6 @@
     <script src="<?php echo $script ?>" type="text/javascript"></script>
 <?php endforeach; ?>
 
-<script type="text/javascript">    
-
-
-    $(function () {
-
-    });
-</script>
-
 <script type="text/javascript">
     jQuery.fn.exists = function(){ return this.length > 0; }
 
@@ -48,7 +40,6 @@
     }
 
     function refreshCurrent() {
-
         $.get('<?php echo $action_get ?>&month=' + current_date.format("YYYY-MM"), function(data) {
             console.log(data);
         }, 'json');
@@ -77,7 +68,7 @@
 */
 
         // Form 
-        $('#bookingModal').modal('show');
+        // $('#bookingModal').modal('show');
         
         jQuery.validator.addMethod("timee", function(value, element, param) {
             console.log(value);
@@ -90,8 +81,6 @@
         jQuery.validator.addMethod("eid", function(value, element, param) {
             return this.optional(element) || /^[0-9]{8}|^[a-zA-z]{6}\d{3}|^[t|T]\d{8}/.test(value);
         }, "Requires a correct staff / student number");
-
-
 
         $("#booking_form").validate({
             rules: {

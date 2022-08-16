@@ -88,6 +88,4 @@ class BookingDAO {
     function deleteBooking($link_id, $user_id, $booking_id) {
         # not implemented (are we doing soft deletes ?)
     }
-
-    function
 }

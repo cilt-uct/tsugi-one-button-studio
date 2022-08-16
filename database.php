@@ -188,22 +188,21 @@ $DATABASE_UPGRADE = function($oldversion) {
         $q = $PDOX->queryReturnError($sql);
     }
 
-    ;
-    $sql= "SELECT count(*) as c FROM `{$CFG->dbprefix}booking_venue`";
-    $count = $PDOX->rowDie($sql);
+    // $sql= "SELECT count(*) as c FROM `{$CFG->dbprefix}booking_venue`";
+    // $count = $PDOX->rowDie($sql);
 
-    if ($count) {
-        echo("Check booking venues: ".$sql." (". json_encode($count) ."-". $count['c'] === 0 .")<br/>\n");
-        error_log("Check booking venues: ".$sql." (". json_encode($count) .")");
+    // if ($count) {
+    //     echo("Check booking venues: ".$sql." (". json_encode($count) ."-". $count['c'] === 0 .")<br/>\n");
+    //     error_log("Check booking venues: ".$sql." (". json_encode($count) .")");
     
-        if ($count['c'] === 0) {
-            $sql = "INSERT INTO {$CFG->dbprefix}booking_venue ".
-                    " (`id`,`CA`,`name`,`color`,`active`) VALUES ". 
-                    " (1,'OBS1-CA','OB1','#3E4A89',1), ".
-                    " (2,'OBS2-CA','OB2','#25828E',0), ".
-                    " (3,'OBS3-CA','Podcast','#6DCD59',0);";
-        }
-    }
+    //     if ($count['c'] === 0) {
+    //         $sql = "INSERT INTO {$CFG->dbprefix}booking_venue ".
+    //                 " (`id`,`CA`,`name`,`color`,`active`) VALUES ". 
+    //                 " (1,'OBS1-CA','OB1','#3E4A89',1), ".
+    //                 " (2,'OBS2-CA','OB2','#25828E',0), ".
+    //                 " (3,'OBS3-CA','Podcast','#6DCD59',0);";
+    //     }
+    // }
 
     return 202012101330;
 

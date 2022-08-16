@@ -182,5 +182,7 @@ class OpencastWS {
         $rows = $PDOX->allRowsDie($qry, $bind);
         return $rows;
     }    
+
+    // function to get all recordings for this user + series
     
 }
