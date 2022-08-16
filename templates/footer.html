@@ -1,0 +1,283 @@
+{% foreach($scripts as $script): %}
+    <script src="{{$script}}" type="text/javascript"></script>
+{% endforeach; %}
+
+<script type="text/javascript">
+    jQuery.fn.exists = function(){ return this.length > 0; }
+
+    function getObj(id, arr, key) { key = key || 'id'; var o = null; $.each(arr, function (i, el) { if (el[key] == id) { o=el; return; } }); return o; };
+    function getObjIndex(id, arr, key) { key = key || 'id'; var o = -1; $.each(arr, function (i, el) { if (el[key] == id) { o=i; return; } }); return o; };
+    function getDisplayData(d, arr) { var o = null; $.each(arr, function (i, el) { if (el.date === d) { o=el; return; } }); return o; };
+
+    var defaultLocaleWeekdaysShort = 'Sun_Mon_Tue_Wed_Thu_Fri_Sat'.split('_');
+    var times = ['', '15:00', '14:00', '13:00', '12:00', '11:00', '10:00', '09:00', '08:00', '', ''];
+    var raw = '[{"month": 6, "bookings": "1" }]';
+   
+    var initial_data = {{ $json }}, data = [], current_date = new Date(), current = {}, refresh_id = null;
+
+    var dates = [];
+    var currDate = moment('{{ $prevPeriod }}').startOf('day');
+    var lastDate = moment('{{ $nextPeriod }}').startOf('day');
+
+    while(currDate.add(1, 'days').diff(lastDate) < 0) {
+        var d_st = currDate.format('YYYY-MM-DD'),
+            arr = initial_data.bookings.filter(z => z.date == d_st); 
+        
+        var o = {"date": currDate.format('YYYY-MM-DD'), "usage": arr.length / 8 * 100};
+        for(var i = 9; i <= 15; i++) {
+            o['am'+ i] = '1';
+            o['am'+ i +'-color'] = arr.filter( z => z.time == (i < 10 ? '0'+i : i)).length == 0 ? "#ccc" : "#449D44"; 
+        }
+        dates.push(o);
+    }
+    
+    function displayCurrent() {
+        current = getDisplayData(current_date.format("YYYY-MM"), data);
+
+        $('#month-title').html(current_date.format('MMMM, YYYY'));
+        $('#calendar').html(tmpl('tmpl-calendar', {date: current_date, data: current}));
+    }
+
+    function refreshCurrent() {
+        $.get('{{ $action_get }}&month=' + current_date.format("YYYY-MM"), function(data) {
+            console.log(data);
+        }, 'json');
+    }
+
+    $(function () {
+
+        data.push(initial_data);
+
+        current_date = moment(initial_data.date, "YYYY-MM");
+        displayCurrent();
+
+        //var refresh_id = window.setInterval(refreshCurrent, 400);
+/*
+        0: {name: 'PHPSESSID', value: '07e2bf392a6673b0e80726aa1a3e3832'}
+        1: {name: 'input_name', value: ''}
+        2: {name: 'input_eid', value: ''}
+        3: {name: 'input_email', value: ''}
+        4: {name: 'input_date', value: ''}
+        5: {name: 'input_venue', value: 'OB 1'}
+        6: {name: 'input_course', value: ''}
+        7: {name: 'input_dept', value: 'Please select ...'}
+        8: {name: 'input_title', value: ''}
+        9: {name: 'input_category', value: 'Please select ...'}
+        10: {name: 'input_desc', value: ''}
+*/
+
+        // Form 
+        // $('#bookingModal').modal('show');
+        
+        jQuery.validator.addMethod("timee", function(value, element, param) {
+            console.log(value);
+            console.log(element);
+            console.log(param);
+            let valid = true;
+            return this.optional(element) || valid;
+        }, "Requires a correct staff / student number");
+
+        jQuery.validator.addMethod("eid", function(value, element, param) {
+            return this.optional(element) || /^[0-9]{8}|^[a-zA-z]{6}\d{3}|^[t|T]\d{8}/.test(value);
+        }, "Requires a correct staff / student number");
+
+        $("#booking_form").validate({
+            rules: {
+                input_name : { required: true, minlength: 2 },
+                input_eid: {
+                    required: true,
+                    eid: true
+                },
+                input_email: {
+                    required: true,
+                    email: true
+                },
+                input_date: { required: true },
+                input_time: {
+                    required: true,
+                    timee: true
+                },
+                input_venue: { required: true },
+                input_course : { required: true, minlength: 2 },
+                input_title : { required: true, minlength: 2 },
+                input_terms: { required: true },
+            },
+            // errorPlacement: function(error, element) {
+            //     element.parent().parent().addClass('has-error');
+            //     error.insertAfter(element);
+            //     console.log(error);
+            //     console.log(element);
+            // }
+        });
+
+        $('#add_booking').on('click', function(event){
+            event.preventDefault();
+            $('#bookingModal').modal('show');
+        });
+
+        $('#input_terms').on('change', function(event){
+            const _me = $(this),
+                  _btn = $('#btn_submit_booking');
+
+            if ($("#booking_form").valid()) {
+                _btn.removeClass('disabled').removeAttr('disabled');
+            } else {
+                _btn.addClass('disabled').attr('disabled', true);
+            }
+        });
+
+        $('#btn_submit_booking').on('click', function(event) {
+            event.preventDefault();
+            const _me = $(this),
+                  _cancel = $('#bnt_cancel_nooking');
+    
+            _cancel.addClass('disabled').attr('disabled', true);
+            _me.html('<i class="fa fa-cog fa-spin"></i>Submitting...').addClass('disabled').attr('disabled', true);
+
+            data = $('#booking_form').serializeArray();
+            data.push({ 'name': 'type', 'value' : 'new'});
+            console.log(data);
+
+            $.post('{{ $action_process }}', data, function( result ) {
+                
+                  console.log(result);
+                   if (result.success) {
+                        $('#bookingModal').modal('hide');
+                   } else {
+                       alert( "error" );
+                   }
+               }, 'json').fail(function() {
+                   alert( "error" );
+            });
+
+        });
+
+        $('#calendar').on('click', '.open div[id*=d_]:not(.me):not(.used)', function(event) {
+            event.preventDefault();
+
+            var _id = $(this).attr('id'),
+                _date = moment(_id,'#_M_D_H');
+            
+            console.log(_date.format('YYYY-MM-DD HH:mm:ss'));
+            
+            // $.post('{{ $action_process }}', { title: 'Test', date: _date.format('YYYY-MM-DD HH:mm:ss') }, function( data ) {
+               
+            //    console.log(data.success);
+            //     if (data.success) {
+            //          $('#bookingModal').modal('show');
+            //     } else {
+            //         alert( "error" );
+            //     }
+            // }, 'json').fail(function() {
+            //     alert( "error" );
+            // });                
+        });
+
+        $('#calendar').on('click', 'div.me[id*=d_]', function(event) {
+            event.preventDefault();
+            
+            // var _id = $(this).attr('id'),
+            //     _date = moment(_id,'#_M_D_H'),
+            //     _o = initial_data.bookings.filter( z => (z.date == _date.format('YYYY-MM-DD')) && (z.time == _date.format('HH')) && (z.isme === "1"));
+
+            // if (_o.length == 1) {
+            //     _o = _o[0];
+            //     console.log(_o);
+
+            //     $.get(('{{ $action_get }}').replace('{id}', _o.id), function(data){
+            //         console.log(data);
+
+            //         $('#bookingModal').modal('show');
+            //     }).fail(function() {
+            //         alert( "error" );
+            //     });
+            // }
+        });
+
+        /*
+        $('#api form').on('submit', function(e) {
+            e.preventDefault();
+            var method = $(this).attr('method') || 'GET';
+            var action = $(this).attr('action');
+            var fd = new FormData();
+            var hasData = false;
+            $(this).find('input,textarea,select').each(function() {
+                if (this.name && this.value) {
+                    hasData = true;
+                    fd.append(this.name, this.value);
+                }
+            });
+            var ajaxOpts = {
+                url: action,
+                type: method,
+                dataType: 'text'
+            };
+
+            if (hasData) {
+                ajaxOpts.data = fd;
+                    ajaxOpts.processData = false;
+                    ajaxOpts.cache = false;
+                    ajaxOpts.contentType = false;
+            }
+            $.ajax(ajaxOpts)
+                .done(function(res) {
+                  $(e.target).siblings('.serverResponse').text(res);
+                })
+                .fail(function(err) {
+                  $(e.target).siblings('.serverResponse').text(JSON.stringify(err));
+                });
+        });
+
+        $('#api form[data-baseaction]').on('input', 'input,textarea,select', function(e) {
+            var alteredAction = $(this).parents('form').data('baseaction');
+            var replacements = {};
+            $(this).parents('form').find('[data-replace]').each(function() {
+                replacements[$(this).data('replace')] = this.value;
+            });
+            for (var key in replacements) {
+                if (replacements[key]) {
+                    alteredAction = alteredAction.replace(key, replacements[key]);
+                }
+            }
+            $(this).parents('form')
+                .attr('action', alteredAction)
+                .siblings('h4')
+                    .find('[data-baseaction]').text(alteredAction.substring(0, alteredAction.indexOf('?PHPSESSID'))); //<-- handle GET params better
+        });
+        */
+
+        // Calendar Controls
+            $('#month-title-container').on('click', '.glyphicon-chevron-left', function(event) {
+                event.preventDefault();
+                current_date.subtract(1, 'months');
+                displayCurrent();
+            });
+
+            $('#month-title-container').on('click', '.glyphicon-chevron-right', function(event) {
+                event.preventDefault();
+                current_date.add(1, 'months');
+                displayCurrent();
+            });
+
+        // Tabs control
+            $(".nav-tabs").on('click','a', function(event){
+                event.preventDefault();
+                $('.nav-tabs li').removeClass('active');
+                $(this).parent().addClass('active');
+                $('.tab-content').hide();
+                $('#' + $(this).prop('rel')).show();
+            });
+
+            $(".nav-pills").on('click','a', function(event){
+                event.preventDefault();
+                var li = $(this).parent(),
+                    goto = li.data('goto');
+                console.log(goto);
+                if(goto == 'today') {
+                    current_date = moment();
+                    displayCurrent();
+                }
+            });
+       
+    });
+</script>

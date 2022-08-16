@@ -41,7 +41,6 @@ if ( $USER->instructor ) { ?>
 </div>
 
 <div id="application">
-
     <ul class="nav nav-tabs">
         <!--li><h1 style="margin-top: 0px;margin-bottom: 0px;padding-right: 20px;">One Button Studio: </h1></li-->
         <li class="active"><a href="#" rel="schedule">Schedule</a></li>
