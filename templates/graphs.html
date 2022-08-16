@@ -1,0 +1,218 @@
+var graphs = [];
+for (var i = 15; i >= 8; i--) {
+    graphs.push({
+        "balloonText": "",
+        "fillAlphas": 0.8,
+        "fillColorsField": "am"+ i +"-color",
+        "lineColorField": "am"+ i +"-color",
+        "id": "graph-am"+ i,
+        "lineAlpha": 0.2,
+        "type": "column",
+        "valueAxis": "Days",
+        "valueField": "am"+ i
+    });
+}
+graphs.push({
+    "id": "graph-occ",
+    "balloonText": "[[value]]",
+    "fillColors": "#FF0000",
+    "title": "graph 3",
+    "valueAxis": "Occupancy",
+    "valueField": "usage",
+    "visibleInLegend": false
+});
+
+AmCharts.makeChart( "view", {
+    "type": "serial",
+    "categoryField": "date",
+    "dataDateFormat": "YYYY-MM-DD",
+    "sequencedAnimation": false,
+    "pathToImages": "http://cdn.amcharts.com/lib/3/images/", // required for grips
+    "categoryAxis": {
+        "parseDates": true,
+        "labelFrequency": 1,
+        "fontSize": 11,
+        "labelRotation": 90,	
+        "gridAlpha": 0,
+        "tickLength": 2,
+        //"categoryFunction": function (category, dataItem, categoryAxis) {
+        //    console.log(category);
+        //    return moment(category).format("MMM DD");
+        //}
+    },
+    "trendLines": [],
+    "graphs": graphs,
+    "guides": [],
+    "chartScrollbar": {
+        "graph": "graph-occ",
+        "graphType": "line",
+        "scrollbarHeight": 30
+    },
+    "valueAxes": [
+        {
+            "id": "Days",
+            "maximum": 10,
+            "minimum": 0,
+            "stackType": "regular",
+            "autoGridCount": false,
+            "showFirstLabel": false,
+            "showLastLabel": false,
+            "title": "",
+            gridCount: 10,
+            labelFunction: function(value, valueText, valueAxis) {
+                return times[value];
+            }
+        },
+        {
+            "id": "Occupancy",
+            "maximum": 100,
+            "minimum": 0,
+            "position": "right",
+            "axisColor": "#666666",
+            "axisThickness": 0,
+            "title": "Occupancy %"
+        }
+    ],
+    "allLabels": [],
+    "balloon": {},
+    "titles": [],
+    "dataProvider": dates,
+    "listeners": [{
+        / *
+        "event": "rendered",
+        "method": function(e) {
+            e.chart.valueAxes[0].zoomToValues(moment().startOf('month').format('YYYY-MM-DD'), moment().endOf('month').format('YYYY-MM-DD'));
+        }* /
+        event: "rendered",
+        method: function(e) {
+            var a = getObjIndex(moment().startOf('month').format('YYYY-MM-DD'), dates, 'date'),
+                b = getObjIndex(moment().endOf('month').format('YYYY-MM-DD'), dates, 'date');
+
+            e.chart.zoomToIndexes(a, b); //set default zoom
+        }
+    }]
+});
+*/
+/**
+ * Line Chart #2
+ */
+AmCharts.makeChart( "line2", {
+    "type": "serial",
+    "dataProvider": [ {
+        "day": 1,
+        "value": 120
+    }, {
+        "day": 2,
+        "value": 54
+    }, {
+        "day": 3,
+        "value": -18
+    }, {
+        "day": 4,
+        "value": -12
+    }, {
+        "day": 5,
+        "value": -51
+    }, {
+        "day": 6,
+        "value": 12
+    }, {
+        "day": 7,
+        "value": 56
+    }, {
+        "day": 8,
+        "value": 113
+    }, {
+        "day": 9,
+        "value": 142
+    }, {
+        "day": 10,
+        "value": 125
+    } ],
+    "categoryField": "day",
+    "autoMargins": false,
+    "marginLeft": 0,
+    "marginRight": 5,
+    "marginTop": 0,
+    "marginBottom": 0,
+    "graphs": [ {
+        "valueField": "value",
+        "showBalloon": false,
+        "lineColor": "#ffbf63",
+        "negativeLineColor": "#289eaf"
+    } ],
+    "valueAxes": [ {
+        "gridAlpha": 0,
+        "axisAlpha": 0,
+        "guides": [ {
+        "value": 0,
+        "lineAlpha": 0.1
+        } ]
+    } ],
+    "categoryAxis": {
+        "gridAlpha": 0,
+        "axisAlpha": 0,
+        "startOnAxis": true
+    }
+});
+
+/**
+ * Column Chart #2
+ */
+AmCharts.makeChart( "column2", {
+    "type": "serial",
+    "dataProvider": [ {
+        "day": 1,
+        "value": -5
+    }, {
+        "day": 2,
+        "value": 3
+    }, {
+        "day": 3,
+        "value": 7
+    }, {
+        "day": 4,
+        "value": -3
+    }, {
+        "day": 5,
+        "value": 3
+    }, {
+        "day": 6,
+        "value": 4
+    }, {
+        "day": 7,
+        "value": 6
+    }, {
+        "day": 8,
+        "value": -3
+    }, {
+        "day": 9,
+        "value": -2
+    }, {
+        "day": 10,
+        "value": 6
+    } ],
+    "categoryField": "day",
+    "autoMargins": false,
+    "marginLeft": 0,
+    "marginRight": 0,
+    "marginTop": 0,
+    "marginBottom": 0,
+    "graphs": [ {
+        "valueField": "value",
+        "type": "column",
+        "fillAlphas": 1,
+        "showBalloon": false,
+        "lineColor": "#ffbf63",
+        "negativeFillColors": "#289eaf",
+        "negativeLineColor": "#289eaf"
+    } ],
+    "valueAxes": [ {
+        "gridAlpha": 0,
+        "axisAlpha": 0
+    } ],
+    "categoryAxis": {
+        "gridAlpha": 0,
+        "axisAlpha": 0
+    }
+});

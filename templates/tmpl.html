@@ -43,7 +43,7 @@
         <span class="day">{%#((o.s != "" ? "<span>"+o.s +"</span> ":"") + o.d)%}</span>
         {% if (day.isoWeekday() <= 5) { %}
         <div>
-            {% for (var k=8; k <= 15; k++) { 
+            {% for (var k=9; k <= 15; k++) { 
                 var me = arr.filter( z => (z.time == (k < 10 ? '0'+k : k)) && (z.isme === "1")).length > 0,
                     used = arr.filter( z => z.time == (k < 10 ? '0'+k : k)).length > 0; 
                 %}
